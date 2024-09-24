@@ -1,6 +1,14 @@
 # Percy
 
+![Work in Progress](https://img.shields.io/badge/status-WIP-yellow.svg) 
+
 Percy is a project designed for building stateful agents for creating characters and storyboarding experiences. It provides a user interface for managing events, characters, and storytelling.
+
+
+
+****Note**: This project is currently under development. Features may not be fully implemented or may change as development continues.**
+
+
 
 ## Table of Contents
 
