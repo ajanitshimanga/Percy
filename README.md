@@ -42,4 +42,4 @@ To set up Percy, follow these steps after forking the repository:
 1. **Running tests**:
 
    ```bash
-   poetry run pytests
+   poetry run pytest
