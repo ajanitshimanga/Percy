@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "percy"
+version = "0.1.0"
+description = ""
+authors = ["Eren-Ajani Tshimanga <eren.tish@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+letta = "^0.1.6"
+pytest = "^8.3.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

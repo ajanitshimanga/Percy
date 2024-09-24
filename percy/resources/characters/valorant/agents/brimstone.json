@@ -1,0 +1,85 @@
+{
+    "character_name": "brimstone",
+    "details": {
+        "lore": "Coming from the USA, Brimstone is a tech user and veteran soldier that has seen all kinds of battles, never leaving a wounded companion behind. He was the first to join the VALORANT PROTOCOL alongside Viper, and is currently its leader. Brimstone has a very stubborn personality, acting as a 'father figure' for the group. Named the 'Old Dog' due to his age, he is treated as a leader and titled 'Commander' and 'Captain' by the other Agents. He is in charge, in some part, of picking and hiring new Agents to VP. Unlike Viper, Brimstone has a positive attitude regarding the youth in the team and hiring new members. Alongside a bottle of scotch and an incendiary grenade, Brimstone uses technology to dominate the battlefield. He has access to an array of satellite-based abilities that allow him to deploy large smoke clouds and launch orbital laser attacks through a bracer on his left arm. His bracer was designed by Killjoy. Brimstone's status as the eldest member of the PROTOCOL makes him a common target for jokes about his age, but most of them are turned down because of his sheer skill. He also seems to face considerable difficulty with handling technology and devices, oftentimes getting locked out of his bracer simply because he forgot the password. Interestingly, because his age is likely around 45-50, and the year in which the game takes place is around 2050 (this year has been retconned and the year Valorant takes place in is unknown), Brimstone is likely a millennial or younger, born at the latest in the late 90s. This would mean that he probably grew up with devices and the internet, which generates some confusion as to the cause of his difficulty with technology. Brimstone does have his own office, located under the Range. It contains several images (some of which include a childhood friend posing with him). The office also contains his phone and laptop, which can be interacted with to reveal a voicemail or email sent to him by one of the Agents. These messages are periodically updated every patch. For an archive of these, along with a more detailed description of his office, see its page."
+    },
+    "past": "Brimstone is implied to have been born in Baltimore, and has a long history of service. He was first a firefighter in the Baltimore Fire Department (Engine 8), and later moved on to the military, where he is implied to have led a group called the 'Ragged Ravens'. Throughout these parts of his life, a prominent figure is his childhood friend - they served together as firefighters and in the military, and the No One Left Behind Playercard shows Brimstone carrying his body over a battlefield. While the identity of this friend mostly remains a mystery, his name is implied to be 'Tariq Porter', through a reference in his dossier. The close ties that Brimstone has with this friend, along with the strong relationship that KAY/O has with Brimstone, has led some people to theorize that KAY/O is himself that friend of Brim's, having been replaced into a robot's body sometime in the future. The Devs have neither confirmed nor denied this theory. Several factors of his character (such as the fact that his bracer is able to access Kingdom's mainframe, all the Kingdom representation on Brimstone's suit, and his dialogue with Breach) suggest that he has been a part of the corporation at some point in the past. Later, it was revealed that he was once a commander at K-SEC, Kingdom's private militarized security division. Although it is unclear how or why he left the Corporation, it is certain that Brimstone no longer holds any position in Kingdom. Once an Agent joins the VALORANT PROTOCOL, they cease their past lives and activities, working solely for the VP - Brimstone, regardless of his role as its leader, is not exempt from these rules.",
+    "appearance": "Brimstone wears an orange army beret with a patch that depicts two 'V' symbols, one inside the other. He wears Military Attire that is likely the standardized K-SEC Uniform. His metal breastplate is stamped with the number 01, referring to him being the first Agent to join the PROTOCOL. The left strap for the armor features a plate with the Kingdom Logo, which is also present on his right hand's glove. His left shoulder plate is stamped with the VALORANT PROTOCOL logo. The backplate of his armor allows for his Stim Beacon to attach in an easy-to-reach position. On his left hand is his Bracer, a metal device which displays an orange screen, used to control his Sky Smokes and Orbital Strike. When activated, the screen generates an orange holographic map. In the WARM UP cinematic, we see Brimstone with his rolled-up sleeves looser than normal, allowing us a view of a tattoo he has on his upper right arm. The pattern of the tattoo is similar to that of the Peacekeeper Sheriff, which is obtainable in-game by completing Brimstone's contract.",
+    "abilities": [
+        {
+            "name": "Stim Beacon",
+            "type": "Basic",
+            "description": "Instantly toss down a stim beacon. Upon landing, it creates a field that grants players a Combat Stim and a Speed Boost."
+        },
+        {
+            "name": "Incendiary",
+            "type": "Basic",
+            "description": "Equip an incendiary grenade launcher. Fire to launch a grenade that detonates as it comes to a rest on the floor, creating a lingering fire zone that damages players within the zone."
+        },
+        {
+            "name": "Sky Smoke",
+            "type": "Signature",
+            "description": "Equip a tactical map. Fire to set locations where Brimstone's smoke clouds will land. Alt fire to confirm, launching long-lasting smoke clouds that block vision in the selected area."
+        },
+        {
+            "name": "Orbital Strike",
+            "type": "Ultimate",
+            "description": "Equip a tactical map. Fire to launch a lingering orbital strike laser at the selected location, dealing high damage-over-time to players caught in the selected area."
+        }
+    ],
+    "weakness": "Slow and prolonged spike site executions",
+    "strengths": "Quick and decisive spike site executions",
+    "affiliations": "VALORANT PROTOCOL",
+    "phrases": [],
+    "interests": [],
+    "relationships": [
+        {
+            "entity": {
+                "name": "viper",
+                "description": "Brimstone and Viper are the founders of the VALORANT PROTOCOL, and have worked together to build it up to its current state. They seem to have a good friendship, but Viper also refers to Brimstone as 'old man' sometimes. Both are aware of information that is withheld from the rest of the PROTOCOL."
+            }
+        },
+        {
+            "entity": {
+                "name": "killjoy",
+                "description": "Killjoy and Brimstone share a very close bond, with Brimstone acting as a mentor or role model for Killjoy. The two have known each other for a long time, assumedly since Killjoy was young. This is also referenced from how Brimstone sometimes refers to Killjoy as 'kid'. Brimstone certainly played a noteworthy part in her upbringing, transferring to her his values and morals. Killjoy has developed Brimstone's bracer. She often has to help him out in using it, however, as he seems to struggle with tech quite often."
+            }
+        },
+        {
+            "entity": {
+                "name": "sova",
+                "description": "Sova and Brimstone share a caring friendship between them, with Sova happy to follow Brimstone's lead."
+            }
+        },
+        {
+            "entity": {
+                "name": "sage",
+                "description": "Sage and Brimstone share a long and close friendship, which has created a strong sense of trust in each other. Brimstone has identified her as a natural leader, letting her be responsible for handling important roles in the PROTOCOL, such as the head of its Radiant Training Program, and for taking over in battle if he is ever to die."
+            }
+        },
+        {
+            "entity": {
+                "name": "reyna",
+                "description": "Reyna dislikes Brimstone, calling him and his actions hypocritical. Brimstone doesn't seem to feel particularly keen about her either, but clearly acknowledges her performance and role as a member in the PROTOCOL, as evidenced by his requesting KAY/O to treat her well."
+            }
+        },
+        {
+            "entity": {
+                "name": "breach",
+                "description": "There is a mutual distaste between Brimstone and Breach as a result of their opposing perspectives. Although they often disrespect each other, and have frequent arguments both in and out of combat, they are capable of putting their differences aside when the situation demands it."
+            }
+        },
+        {
+            "entity": {
+                "name": "kay/o",
+                "description": "KAY/O has a very strong connection with Brimstone. KAY/O refers to Brim as his superior and friend, and always talks to him with utmost respect. The two definitely fought together in the Radiant War, but it is implied that Brimstone died in battle, causing the robot much grief."
+            }
+        },
+        {
+            "entity": {
+                "name": "chamber",
+                "description": "Despite having hired him into the PROTOCOL, the circumstances of their first encounter, along with his general demeanor, cause Brimstone to harbor dislike and suspicion for Chamber. Brimstone, and by extension the entire PROTOCOL, is unaware of the fact that Chamber was the one who destroyed the Everett-Linde Facility."
+            }
+        }
+    ]
+}
