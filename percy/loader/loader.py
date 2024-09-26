@@ -25,7 +25,7 @@ class Relationship(BaseModel):
 
 class Character(BaseModel):
     character_name: str
-    details: dict  # define a more specific model for details if needed
+    details: dict  # define a more specific schemas for details if needed
     past: str
     appearance: str
     relationships: List[Relationship]
@@ -61,7 +61,7 @@ class JsonCharacterRepository(CharacterRepository):
             raise FileNotFoundError(f"{self.filename} does not exist.")
         with open(self.filename, 'r') as file:
             data = json.load(file)
-            return data #Character(**data)  # Unpack the dictionary into the Character model
+            return data #Character(**data)  # Unpack the dictionary into the Character schemas
 
     def save(self, character_dict: dict):
         with open(self.filename, 'w') as file:
