@@ -3,7 +3,7 @@ from typing import List
 
 import requests
 
-from percy.client.model.characters import CharacterCreateResponse, CharacterCreateRequest, CharacterGetResponse, \
+from percy.schemas.characters import CharacterCreateResponse, CharacterCreateRequest, CharacterGetResponse, \
     CharacterUpdateRequest, CharacterUpdateResponse, CharacterDeleteRequest, CharacterDeleteResponse
 
 

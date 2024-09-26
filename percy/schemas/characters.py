@@ -1,5 +1,3 @@
-import uuid
-
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 
@@ -21,15 +19,15 @@ class CharacterCreateRequest(BaseModel):
 
 
 class CharacterCreateResponse(BaseModel):
-    character_id: uuid.UUID
+    character_id: str
 
 
 class CharacterGetRequest(BaseModel):
-    character_id: uuid.UUID
+    character_id: str
 
 
 class CharacterGetResponse(BaseModel):
-    character_id: uuid.UUID
+    character_id: str
     character_dict: dict
 
 
@@ -54,9 +52,9 @@ class CharacterUpdateResponse(BaseModel):
 
 
 class CharacterDeleteRequest(BaseModel):
-    character_id: uuid.UUID
+    character_id: str
 
 
 class CharacterDeleteResponse(BaseModel):
-    character_id: uuid.UUID
+    character_id: str
     character_name: str
