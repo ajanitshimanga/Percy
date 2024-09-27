@@ -1,12 +1,23 @@
-from sqlalchemy import String, JSON, DateTime
+from sqlalchemy import Column, String, JSON, DateTime
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.testing.pickleable import User
-from sqlalchemy.testing.schema import Column
+from pydantic import BaseModel
+from datetime import datetime
 
 Base = declarative_base()
 
 
+# Pydantic Model for User
+class User(BaseModel):
+    id: str
+    username: str
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+# SQLAlchemy Model for User
 class UserModel(Base):
     __tablename__ = "users"
     __table_args__ = {"extend_existing": True}
@@ -16,13 +27,13 @@ class UserModel(Base):
     created_at = Column(DateTime(timezone=True))
 
     def __repr__(self) -> str:
-        return f"<User(id='{self.id}' username='{self.username}')>"
+        return f"<User(id='{self.id}', username='{self.username}')>"
 
     def to_record(self) -> User:
         return User(id=self.id, username=self.username, created_at=self.created_at)
 
 
-# Define Character Model scheme for postgresql
+# SQLAlchemy Model for Character
 class CharacterModel(Base):
     __tablename__ = "characters"
     __table_args__ = {"extend_existing": True}
