@@ -41,7 +41,7 @@ class RestClient(Client):
 
     """
 
-    def __init__(self, base_uri: str, token: str):
+    def __init__(self, base_uri: str="", token: str="dummy_token"):
         self.base_uri = base_uri
         self.token = token
         self.headers = {"accept": "application/json", "content-type": "application/json",
@@ -127,3 +127,30 @@ class RestClient(Client):
             raise ValueError(f"Status {response.status_code} - Failed to list character: {response.text}")
 
         return [CharacterGetResponse(**character) for character in response.json()]
+
+
+class LocalClient(Client):
+
+    def __init__(self):
+        from percy.server.server import PercyManagementContext
+        self.server = PercyManagementContext()
+
+    @abstractmethod
+    def create_character(self, character_name: str, character_dict: dict):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_character(self, character_id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def update_character(self, character_id: str, character_name: str, character_dict: dict):
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_character(self, character_id: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def list_characters(self):
+        raise NotImplementedError
