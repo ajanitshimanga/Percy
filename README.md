@@ -54,4 +54,5 @@ To set up Percy, follow these steps after forking the repository:
 
 1. **uvicorn server**:
 
-    ```uvicorn percy.server.app:app --reload
+    ```bash
+    uvicorn percy.server.app:app --reload
