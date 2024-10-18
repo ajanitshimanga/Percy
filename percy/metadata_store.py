@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, JSON, DateTime
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy.orm import declarative_base
 from pydantic import BaseModel
 from datetime import datetime
@@ -38,35 +37,30 @@ class CharacterModel(Base):
     __tablename__ = "characters"
     __table_args__ = {"extend_existing": True}
 
-    user_id = Column(String, primary_key=True, index=True)
-    character_id = Column(String, index=True)
+    character_id = Column(String, index=True, primary_key=True)
     character_name = Column(String)
     lore = Column(String)
-    past = Column(String)
     appearance = Column(String)
-    abilities = Column(JSON)
+    misc = Column(String)
 
-    weakness = Column(String)
-    strengths = Column(String)
-    affiliations = Column(String)
-    phrases = Column(ARRAY(String))
-    interests = Column(ARRAY(String))
-    relationships = Column(JSON)
+    # TODO(ajanitshimanga): Handle user based authentication after CRUD.
+    # user_id = Column(String, primary_key=True, index=True)
+    # past = Column(String)
+    # abilities = Column(JSON)
+    #
+    # weakness = Column(String)
+    # strengths = Column(String)
+    # affiliations = Column(String)
+    # phrases = Column(ARRAY(String))
+    # interests = Column(ARRAY(String))
+    # relationships = Column(JSON)
 
     def __repr__(self):
         return (
             f"<Character("
-            f"user_id={self.user_id}, "
             f"character_id={self.character_id}, "
             f"character_name='{self.character_name}', "
-            f"lore='{self.lore}', "
-            f"past='{self.past}', "
             f"appearance='{self.appearance}', "
-            f"abilities={self.abilities}, "
-            f"weakness='{self.weakness}', "
-            f"strengths='{self.strengths}', "
-            f"affiliations='{self.affiliations}', "
-            f"phrases={self.phrases}, "
-            f"interests={self.interests}, "
-            f"relationships={self.relationships})>"
+            f"lore='{self.lore}', "
+            f"misc='{self.misc}', "
         )

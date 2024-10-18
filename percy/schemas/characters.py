@@ -1,50 +1,41 @@
-from pydantic import BaseModel
-from typing import List, Optional, Dict
+import uuid
+
+from pydantic import BaseModel, Field
+from typing import List, Optional
 
 
 # Pydantic models for request/response
+# NOTe: Cut model bloat for now, increase when needed. Keeping light
 class CharacterCreateRequest(BaseModel):
-    character_name: str
+    character_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
     lore: Optional[str] = None
-    past: Optional[str] = None
     appearance: Optional[str] = None
-    relationships: Optional[Dict] = None  # Assuming relationships are stored as a dictionary
-    abilities: Optional[Dict] = None  # Assuming abilities are stored as a dictionary
-
-    weakness: Optional[str] = None
-    strengths: Optional[str] = None
-    affiliations: Optional[str] = None
-    phrases: Optional[List[str]] = None
-    interests: Optional[List[str]] = None
+    misc: Optional[str] = None
 
 
 class CharacterCreateResponse(BaseModel):
-    character_id: str
+    character_id: Optional[str] = None
 
 
 class CharacterGetRequest(BaseModel):
     character_id: str
+    character_name: str
 
 
 class CharacterGetResponse(BaseModel):
     character_id: str
-    character_dict: dict
+    lore: Optional[str] = None
+    appearance: Optional[str] = None
+    misc: Optional[List[str]] = None
 
 
 class CharacterUpdateRequest(BaseModel):
     character_id: str
-    character_name: str
+    character_name: Optional[str] = None
     lore: Optional[str] = None
-    past: Optional[str] = None
     appearance: Optional[str] = None
-    relationships: Optional[Dict] = None  # Assuming relationships are stored as a dictionary
-    abilities: Optional[Dict] = None  # Assuming abilities are stored as a dictionary
-
-    weakness: Optional[str] = None
-    strengths: Optional[str] = None
-    affiliations: Optional[str] = None
-    phrases: Optional[List[str]] = None
-    interests: Optional[List[str]] = None
+    misc: Optional[List[str]] = None
 
 
 class CharacterUpdateResponse(BaseModel):

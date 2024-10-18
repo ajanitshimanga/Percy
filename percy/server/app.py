@@ -1,44 +1,65 @@
 import os
+import uuid
 
 from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from percy.metadata_store import CharacterModel
-from percy.schemas.characters import CharacterCreateResponse, CharacterCreateRequest
+#from percy.metadata_store import CharacterModel
+from percy.schemas.characters import CharacterCreateResponse, CharacterCreateRequest, CharacterDeleteResponse, \
+    CharacterGetRequest, CharacterGetResponse
+from percy.server.server import get_percy_server
+
 
 app = FastAPI()
-
-POSTGRES_USER = os.getenv("POSTGRES_USER", "percy")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "percy-password")
-POSTGRES_DB = os.getenv("POSTGRES_DB", "percy-db")
-
-
-# Database setup
-# Update with your DB URL TODO(ajanitshimanga): Change to be db agnostic with a db provider factory.
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/{POSTGRES_DB}"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-# Dependency to get the database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # Create a new character
 # TODO(ajanitshimanga): Break out direct database use into a server instance that can make a rewuest to commit a char.
 @app.post("/characters/", response_model=CharacterCreateResponse)
-def create_character(character: CharacterCreateRequest, db: Session = Depends(get_db)):
-    db_character = CharacterModel(**character.dict())
-    db.add(db_character)
-    db.commit()
-    db.refresh(db_character)
-    return db_character
+def create_character(character: CharacterCreateRequest, percy_server: Depends(get_percy_server)):
+
+    character_id = character.character_id
+    name = character.name
+    lore = character.lore
+    appearance = character.appearance
+    misc = character.misc
+
+    percy_server.create_character(character_id=character_id,
+                                  character_name=name,
+                                  lore=lore,
+                                  appearance=appearance,
+                                  misc=misc)
+
+    return CharacterCreateResponse(character_id=character_id)
+
+
+# Get a character
+# TODO(ajanitshimanga): Break out direct database use into a server instance that can make a rewuest to commit a char.
+@app.post("/characters/", response_model=CharacterGetResponse)
+def get_character(request: CharacterGetRequest, percy_server: Depends(get_percy_server)):
+
+    response = percy_server.get_character(character_id=request.character_id, character_name=request.character_name)
+    return response
+
+
+
+
+# Delete a character
+@app.delete("/characters/{character_id}", response_model=CharacterDeleteResponse)
+def delete_character(character_id: str, percy_server: Depends(get_percy_server)):
+
+    character_name = percy_server.delete_character(character_id=character_id)
+
+    return CharacterDeleteResponse(character_id=character_id, character_name=str(character_name))
+
+
+# TODO(ajanitshimanga): Add in other endpoints later.
+
+# # Read a character based on id
+# @app.get("/characters/{user_id}")
+# def get_character(character_read: CharacterGetRequest, db: Session = next(get_db())):
+
 
 
 # class CharacterReadRequest(BaseModel):
@@ -51,7 +72,7 @@ def create_character(character: CharacterCreateRequest, db: Session = Depends(ge
 # class CharacterReadResponse(BaseModel):
 
 
-#TODO(ajanitshimanga): Add in other endpoints later.
+# TODO(ajanitshimanga): Add in other endpoints later.
 #
 # # Read all characters
 # @app.get("/characters/{user_id}", response_model=List[CharacterReadResponse])
@@ -74,13 +95,3 @@ def create_character(character: CharacterCreateRequest, db: Session = Depends(ge
 #     return db_character
 #
 #
-# # Delete a character
-# @app.delete("/characters/{character_id}", response_model=CharacterDeleteResponse)
-# def delete_character(character_id: UUID, db: Session = Depends(get_db)):
-#     db_character = db.query(CharacterModel).filter(CharacterModel.id == character_id).first()
-#     if not db_character:
-#         raise HTTPException(status_code=404, detail="Character not found")
-#
-#     db.delete(db_character)
-#     db.commit()
-#     return db_character
