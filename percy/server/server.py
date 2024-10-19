@@ -7,11 +7,11 @@ from letta.client.client import AbstractClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from percy.metadata_store import CharacterModel
+from percy.metadata_store import CharacterModel, DataStore
 from percy.schemas.characters import CharacterGetResponse, CharacterCreateResponse, \
     CharacterDeleteResponse, CharacterUpdateResponse
 
-# TODO(ajanitshimanga): dockerize application and spin up postgres & letta servers.
+# TODO(ajanitshimanga): dockerize application and spin up postgres & letta server with 'docker compose up'.
 
 # Env variables
 POSTGRES_USER = os.getenv("POSTGRES_USER", "percy")
@@ -46,13 +46,18 @@ class AbstractPercyContext(object):
     def list_characters(self, user_id: str):
         raise NotImplementedError
 
+    @abstractmethod
+    def send_message(self, character_id: str, message: str):
+        raise NotImplementedError
+
 
 class PercyManagementContext(AbstractPercyContext):
 
-    # TODO(ajanitshimanga): Refactor raw db to a metadata service.
-    def __init__(self, db: Session, agent_client):
-        self.db = db
+    # TODO(ajanitshimanga): Refactor raw db session to a metadata service.
+    def __init__(self, db_session: Session,  agent_client: AbstractClient, datastore: DataStore = None):
+        self.db_session = db_session
         self.agent_client = agent_client
+        self.datastore = datastore   # TODO: plumb in data store to phase out db_session
 
     def create_character(self, character_id: str, character_name, lore, appearance, misc) -> CharacterCreateResponse:
         character = CharacterModel(character_id=character_id,
@@ -64,16 +69,14 @@ class PercyManagementContext(AbstractPercyContext):
 
         # TODO(ajanitshimanga): self.metadata_store.create_character(character) instead of coupling.
 
-        self.db.add(character)
-        self.db.commit()
-        self.db.refresh(character)
+        self.db_session.add(character)
+        self.db_session.commit()
 
-        response = CharacterCreateResponse(character_id=character_id)
-        return response
+        return CharacterCreateResponse(character_id=character_id)
 
     def get_character(self, character_id: str, character_name: Optional[str] = None) -> CharacterGetResponse:
         # Retrieve record
-        character_record = self.db.query(CharacterModel).filter(CharacterModel.id == character_id).first()
+        character_record = self.db_session.query(CharacterModel).filter(CharacterModel.id == character_id).first()
 
         if not character_record:
             raise HTTPException(status_code=404, detail="Character not found")
@@ -89,55 +92,62 @@ class PercyManagementContext(AbstractPercyContext):
                                     character_age=character_age
                                     )
 
-    def update_character(self, character_id: str, character_name: str, lore: str, appearance: str, misc: str) -> CharacterUpdateResponse:
+    def update_character(self, character_id: str, character_name: str, lore: str, appearance: str,
+                         misc: str) -> CharacterUpdateResponse:
         # Retrieve record
-        db_character = self.db.query(CharacterModel).filter(CharacterModel.id == character_id).first()
+        character_record = self.db_session.query(CharacterModel).filter(CharacterModel.id == character_id).first()
 
-        if not db_character:
+        if not character_record:
             raise HTTPException(status_code=404, detail="Character not found")
 
         # Set attributes only if passed
         if character_name:
-            db_character.character_name = character_name
+            character_record.character_name = character_name
 
         if lore:
-            db_character.lore = lore
+            character_record.lore = lore
 
         if appearance:
-            db_character.appearance = appearance
+            character_record.appearance = appearance
 
         if misc:
-            db_character.misc = misc
+            character_record.misc = misc
 
-        self.db.commit()
-        self.db.refresh(db_character)   # We don't use the record after so isn't important.
+        self.db_session.commit()
+        self.db_session.refresh(character_record)  # We don't use the record after so this isn't required.
 
-        return CharacterUpdateResponse(character_id)
+        return CharacterUpdateResponse(character_id=character_id)
 
     def delete_character(self, character_id: str) -> CharacterDeleteResponse:
-        # TODO(ajanitshimanga): hide guts / direct db access to a DataAccess class rather than in server endpoints.
-        db_character = self.db.query(CharacterModel).filter(CharacterModel.id == character_id).first()
-        if not db_character:
+        character_record = self.db_session.query(CharacterModel).filter(CharacterModel.id == character_id).first()
+
+        if not character_record:
             raise HTTPException(status_code=404, detail="Character not found")
 
-        self.db.delete(db_character)
-        self.db.commit()
+        character_id = character_record.character_id
+        character_name = character_record.character_name
 
-        CharacterDeleteResponse(character_id=character_id, character_name=str(character_name))
-        return
+        # TODO(ajanitshimanga): hide guts / direct db access to a DataAccess class rather than in server endpoints.
 
-    def list_characters(self):
-        # TODO: Default path
+        self.db_session.delete(character_record)
+        self.db_session.commit()
+
+        return CharacterDeleteResponse(character_id=character_id, character_name=character_name)
+
+    def list_characters(self, user_id: str):
+        raise NotImplementedError
+
+    def send_message(self, character_id: str, message: str):
         raise NotImplementedError
 
 
 # Database dependency for FastAPI
-def get_db():
-    db = SessionLocal()
+def get_db_session():
+    db_session = SessionLocal()
     try:
-        yield db
+        yield db_session
     finally:
-        db.close()
+        db_session.close()
 
 
 # Letta dependency for agents
@@ -149,6 +159,8 @@ def get_letta_client():
 
 
 # Service instance using the stubbed database
-def get_percy_server(db: Session = Depends(get_db),
+def get_percy_server(db_session: Session = Depends(get_db_session),
                      letta_client: AbstractClient = Depends(get_letta_client())) -> PercyManagementContext:
-    return PercyManagementContext(db, letta_client)
+
+    # TODO(ajanitshimanga): refactor with functional mstore dependency
+    return PercyManagementContext(db_session, letta_client)
