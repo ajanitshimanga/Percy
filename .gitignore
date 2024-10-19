@@ -166,3 +166,8 @@ cython_debug/
 #.idea/
 
 .idea/
+
+# Letta files
+
+openapi_letta.json
+openapi_openai.json
