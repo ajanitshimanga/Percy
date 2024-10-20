@@ -25,7 +25,12 @@ docker run --name postgres-container -d \
   postgres:latest
 
 # Wait for a few seconds to allow the database to start
-sleep 5
+sleep 3
+
+letta server
+
+# Wait for a few seconds to allow the database to start
+sleep 3
 
 # Provide the connection URL
 echo "PostgreSQL is running."

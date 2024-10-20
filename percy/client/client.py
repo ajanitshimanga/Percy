@@ -29,7 +29,7 @@ class Client(ABC):
         raise NotImplementedError
 
 
-class RestClient(Client):
+class RestClientPercy(Client):
 
     def __init__(self, base_uri: str = "", token: str = "dummy_token"):
         self.base_uri = base_uri
@@ -80,7 +80,7 @@ class RestClient(Client):
         return [CharacterGetResponse(**character) for character in response.json()]
 
 
-class LocalClient(Client):
+class LocalClientPercy(Client):
 
     def __init__(self):
         from percy.server.server import get_local_percy_server
@@ -115,7 +115,7 @@ test_character_json = {"name": "brimstone",
                        }
 
 if __name__ == "__main__":
-    local_client = LocalClient()
+    local_client = LocalClientPercy()
 
     CREATE_PATH_EXAMPLE = """
     # Create path example
