@@ -15,4 +15,3 @@ def get_absolute_path(relative_path: str) -> str:
     full_path = base_dir / relative_path
     # Convert to absolute path
     return str(full_path.resolve())  # Resolve to get the absolute path
-

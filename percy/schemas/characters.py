@@ -49,3 +49,15 @@ class CharacterDeleteRequest(BaseModel):
 class CharacterDeleteResponse(BaseModel):
     character_id: str
     character_name: str
+
+
+class MessageCharacterRequest(BaseModel):
+    character_id: str
+    message: str
+    character_name: Optional[str] = None
+
+
+class MessageCharacterResponse(BaseModel):
+    character_id: str
+    message: str
+    character_name: Optional[str] = None

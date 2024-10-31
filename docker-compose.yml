@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgresql-store:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-percy}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-percy-password}
+      POSTGRES_DB: ${POSTGRES_DB:-percy-db}
+    ports:
+      - "5433:5432"  # Map port 5432 to access Postgres on localhost
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persist data
+
+  letta-server:
+    build:
+      context: .  # Assuming your Dockerfile-letta is in the same directory as your docker-compose.yml
+      dockerfile: Dockerfile-letta  # Specify the custom Dockerfile name
+    ports:
+      - "8283:8283"  # Map host port 8283 to container port 8283
+    depends_on:
+      - postgresql-store  # Ensure the letta server starts after the database
+
+volumes:
+  pgdata:

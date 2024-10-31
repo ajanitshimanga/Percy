@@ -83,11 +83,10 @@ class RestClientPercy(Client):
 class LocalClientPercy(Client):
 
     def __init__(self):
-        from percy.server.server import get_local_percy_server
-        self.server = get_local_percy_server()
+        from percy.server.server import get_percy_server
+        self.server = get_percy_server()
 
     def create_character(self, request: CharacterCreateRequest) -> CharacterCreateResponse:
-        # Assume `self.server.create_character` has a similar signature
         response = self.server.create_character(**request.dict())
         return CharacterCreateResponse(**response.dict())
 
@@ -97,14 +96,17 @@ class LocalClientPercy(Client):
 
     def update_character(self, request: CharacterUpdateRequest) -> CharacterUpdateResponse:
         response = self.server.update_character(**request.dict())
-        return CharacterUpdateResponse(**response)
+        return CharacterUpdateResponse(**response.dict())
 
     def delete_character(self, character_id: str) -> CharacterDeleteResponse:
         response = self.server.delete_character(character_id)
-        return CharacterDeleteResponse(**response)
+        return CharacterDeleteResponse(**response.dict())
 
     def list_characters(self) -> List[CharacterGetResponse]:
-        characters = self.server.list_characters()  # Assuming this returns a list of character dicts
+        # TODO(ajanitshimanga): implementation
+
+        char_id = "implement"
+        characters = self.server.list_characters(char_id)  # Assuming this returns a list of character dicts
         return [CharacterGetResponse(**character) for character in characters]
 
 
@@ -116,34 +118,38 @@ test_character_json = {"name": "brimstone",
 
 if __name__ == "__main__":
     local_client = LocalClientPercy()
+    print("~~~~~~~~~~~~~\n\n\n\n")
+    print(local_client)
+    print("~~~~~~~~~~~~~\n\n\n\n")
 
-    CREATE_PATH_EXAMPLE = """
-    # Create path example
-    Made a character record entry for brimstone.
-    
-    test_character_name = test_character_json["name"]
-    test_character_lore = test_character_json["lore"]
-    test_character_appearance = test_character_json["appearance"]
-    test_character_misc = test_character_json["misc"]
-
-    create_character_request = CharacterCreateRequest(character_name=test_character_name,
-                                                      lore=test_character_lore,
-                                                      appearance=test_character_appearance,
-                                                      misc=test_character_misc)
-
-    create_character_response = local_client.create_character(create_character_request)
-
-    print("THIS IS THE RESPONSE I GOT:", create_character_response)
-    """
-
-    character_id_for_brimstone = '7c4a3280-fac0-4ee6-abfb-21439a6c36d0'
-
-    get_response = local_client.get_character(character_id_for_brimstone)
-
-    print("THIS IS A GET RESPONSE: ")
-    for key in get_response.dict().keys():
-        print(key + "  ----   ", get_response.dict()[key])
-        print("\n\n\n")
+    #
+    # CREATE_PATH_EXAMPLE = """
+    # # Create path example
+    # Made a character record entry for brimstone.
+    #
+    # test_character_name = test_character_json["name"]
+    # test_character_lore = test_character_json["lore"]
+    # test_character_appearance = test_character_json["appearance"]
+    # test_character_misc = test_character_json["misc"]
+    #
+    # create_character_request = CharacterCreateRequest(character_name=test_character_name,
+    #                                                   lore=test_character_lore,
+    #                                                   appearance=test_character_appearance,
+    #                                                   misc=test_character_misc)
+    #
+    # create_character_response = local_client.create_character(create_character_request)
+    #
+    # print("THIS IS THE RESPONSE I GOT:", create_character_response)
+    # """
+    #
+    # character_id_for_brimstone = '7c4a3280-fac0-4ee6-abfb-21439a6c36d0'
+    #
+    # get_response = local_client.get_character(character_id_for_brimstone)
+    #
+    # print("THIS IS A GET RESPONSE: ")
+    # for key in get_response.dict().keys():
+    #     print(key + "  ----   ", get_response.dict()[key])
+    #     print("\n\n\n")
 
 # from abc import ABC, abstractmethod
 # from typing import List
