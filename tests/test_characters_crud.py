@@ -3,8 +3,7 @@ import uuid
 import pytest
 
 from percy.client.client import LocalClientPercy
-from percy.schemas.characters import CharacterCreateRequest
-from percy.server.server import SessionLocal, get_letta_client, PercyManagementContext
+from percy.schemas.characters import CharacterCreateRequest, CharacterUpdateRequest
 
 
 test_character_json = {"name": "brimstone",
@@ -16,21 +15,14 @@ test_character_json = {"name": "brimstone",
 
 @pytest.fixture(scope="function")
 def percy():
-
     # before
-    session = SessionLocal()
 
     yield LocalClientPercy()
 
-    # after - clean up and close
-    session.rollback()
-    session.close()
+    # after
 
 
 def test_characters_crud(percy):
-    # Percy server instance.
-    percy_server = percy
-
     # Test character setup
     test_character_name = test_character_json["name"]
     test_character_lore = test_character_json["lore"]
@@ -43,7 +35,62 @@ def test_characters_crud(percy):
                                                       misc=test_character_misc)
 
     # Create character path - need to rewrite to separate table for testing.
-    create_character_response = percy_server.create_character(create_character_request)
+    create_character_response = percy.create_character(create_character_request)
 
-    assert create_character_response.character_id is not None
+    char_id = create_character_response.character_id
+
+    assert char_id is not None
     assert type(create_character_response.character_id) == str
+
+    # Verify get character
+    char = percy.get_character(character_id=char_id)
+
+    assert char.character_id
+    assert char.character_name == test_character_name
+    assert char.lore == test_character_lore
+    assert char.appearance == test_character_appearance
+    assert char.misc == test_character_misc
+
+    # Verify send message
+    message = "Can you generate me some simple and concise ideas on how Brimstone would conflict with Mickey Mouse?"
+
+    response = percy.send_message(char_id, message)
+
+    text_response = response.messages[0].internal_monologue
+
+    assert text_response
+    assert type(text_response) == str
+
+    # Verify update character
+
+    test_character_name = test_character_json["name"] + "y"
+    test_character_lore = test_character_json["lore"] + "This is random text for update."
+    test_character_appearance = test_character_json["appearance"] + "Has a clown nose that is bright red."
+    test_character_misc = test_character_json["misc"]
+
+    update_character_request = CharacterUpdateRequest(character_id=char_id,
+                                                      character_name=test_character_name,
+                                                      lore=test_character_lore,
+                                                      appearance=test_character_appearance,
+                                                      misc=test_character_misc)
+
+    char_id = percy.update_character(update_character_request).character_id
+
+    assert char_id
+
+    # Verify send message on updated character.
+    message = "Does brimstoney have a clown nose? What color is it? Be concise"
+
+    response = percy.send_message(char_id, message)
+
+    text_response = response.messages[0].internal_monologue.lower()
+
+    assert text_response
+    assert type(text_response) == str
+    # assert "red" in text_response
+
+    # Verify - Delete
+    char = percy.delete_character(char_id)
+
+    assert char.character_id
+    assert char.character_name == test_character_name

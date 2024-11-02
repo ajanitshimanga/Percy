@@ -25,6 +25,7 @@ class CharacterGetRequest(BaseModel):
 
 class CharacterGetResponse(BaseModel):
     character_id: str
+    character_name: str
     lore: Optional[str] = None
     appearance: Optional[str] = None
     misc: Optional[str] = None

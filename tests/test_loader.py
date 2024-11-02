@@ -1,7 +1,7 @@
 from percy.loader.loader import JsonCharacterRepository
 
 
-// TODO(ajanitshimanga): uncomment or remove json loader from package. No longer supported for now but keeping for now.
+# TODO(ajanitshimanga): uncomment or remove json loader from package. No longer supported for now but keeping for now.
 def test_json_loader():
     # TODO(ajanitshimanga): Transitioning to postgres - no longer needed.
     #

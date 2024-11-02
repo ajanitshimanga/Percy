@@ -97,7 +97,14 @@ class PercyManagementContext(AbstractPercyContext):
 """
         chat_memory = ChatMemory(persona=base_persona, human=f"Name: {user_name}", limit=6000)
 
-        # Create an agent and populate a db record for character_id -> agent id
+        # We can try to create an agent and populate a db record for character_id -> agent id
+
+        agent_id = self.agent_client.get_agent_id(agent_name=character_name)
+
+        # If there is an agent with the name already, grab the id and lets remake it. - def a better way to do this.
+        if agent_id:
+            self.agent_client.delete_agent(agent_id=agent_id)
+
         agent_state = self.agent_client.create_agent(name=character_name, memory=chat_memory)
         agent_id = agent_state.id
 
@@ -133,6 +140,7 @@ class PercyManagementContext(AbstractPercyContext):
         misc = character_record.misc
 
         return CharacterGetResponse(character_id=character_id,
+                                    character_name=character_name,
                                     lore=lore,
                                     appearance=appearance,
                                     misc=misc
@@ -185,8 +193,12 @@ class PercyManagementContext(AbstractPercyContext):
 
     def send_message(self, character_id: str, message: str, character_name: Optional[str] = None):
 
+        character_record = self.db_session.query(CharacterModel).filter(CharacterModel.character_id == character_id).first()
+
+        agent_id = character_record.agent_id
+
         # Send message.
-        agent_response = self.agent_client.send_message(message=message, role="user", agent_id=character_id)
+        agent_response = self.agent_client.send_message(message=message, role="user", agent_id=agent_id)
 
         return agent_response
 

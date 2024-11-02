@@ -84,25 +84,25 @@ class LocalClientPercy(Client):
 
     def __init__(self):
         from percy.server.server import get_local_percy_server
-        self.server = get_local_percy_server()
+        self._server = get_local_percy_server()
 
     def create_character(self, request: CharacterCreateRequest) -> CharacterCreateResponse:
-        with self.server as percy:
+        with self._server as percy:
             response = percy.create_character(**request.dict())
         return CharacterCreateResponse(**response.dict())
 
     def get_character(self, character_id: str) -> CharacterGetResponse:
-        with self.server as percy:
+        with self._server as percy:
             response = percy.get_character(character_id)
         return CharacterGetResponse(**response.dict())
 
     def update_character(self, request: CharacterUpdateRequest) -> CharacterUpdateResponse:
-        with self.server as percy:
+        with self._server as percy:
             response = percy.update_character(**request.dict())
         return CharacterUpdateResponse(**response.dict())
 
     def delete_character(self, character_id: str) -> CharacterDeleteResponse:
-        with self.server as percy:
+        with self._server as percy:
             response = percy.delete_character(character_id)
         return CharacterDeleteResponse(**response.dict())
 
@@ -110,8 +110,13 @@ class LocalClientPercy(Client):
         # TODO(ajanitshimanga): implementation
 
         char_id = "implement"
-        characters = self.server.list_characters(char_id)  # Assuming this returns a list of character dicts
+        characters = self._server.list_characters(char_id)  # Assuming this returns a list of character dicts
         return [CharacterGetResponse(**character) for character in characters]
+
+    def send_message(self, character_id: str, message: str):
+        with self._server as percy:
+            response = percy.send_message(character_id=character_id, message=message)
+        return response
 
 
 if __name__ == "__main__":
@@ -123,21 +128,27 @@ if __name__ == "__main__":
                            "misc": "misc input i am on top of the world! :))"
                            }
 
-    # Verify - Create route
-    test_character_name = test_character_json["name"]
-    test_character_lore = test_character_json["lore"]
-    test_character_appearance = test_character_json["appearance"]
-    test_character_misc = test_character_json["misc"]
+    # # Verify - Create route
+    # test_character_name = test_character_json["name"]
+    # test_character_lore = test_character_json["lore"]
+    # test_character_appearance = test_character_json["appearance"]
+    # test_character_misc = test_character_json["misc"]
+    #
+    # create_character_request = CharacterCreateRequest(character_name=test_character_name,
+    #                                                   lore=test_character_lore,
+    #                                                   appearance=test_character_appearance,
+    #                                                   misc=test_character_misc)
+    #
+    # create_character_response = local_client.create_character(create_character_request)
+    # print("THIS IS THE RESPONSE I GOT:", create_character_response)
 
-    create_character_request = CharacterCreateRequest(character_name=test_character_name,
-                                                      lore=test_character_lore,
-                                                      appearance=test_character_appearance,
-                                                      misc=test_character_misc)
+    char_id = '94f71df9-2712-4e23-80f7-2e6f62c601d3'
 
-    create_character_response = local_client.create_character(create_character_request)
-    print("THIS IS THE RESPONSE I GOT:", create_character_response)
+    message = "Can you generate me some simple and concise ideas to show their conflicts?"
 
+    response = local_client.send_message(char_id, message)
 
+    print("THIS IS THE RESPONSE I GOT:", response.messages[0].internal_monologue)
 
     # # Verify - get path
     # character_id_for_brimstone = '375451b8-da6b-4db9-a1ba-efb4b9c16d81'
