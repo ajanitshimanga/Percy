@@ -52,7 +52,7 @@ To set up Percy, follow these steps after forking the repository:
    ```bash
    poetry run pytest
 
-1. **uvicorn server**:
+1. **Start Percy server**:
 
     ```bash
-    uvicorn percy.server.app:app --reload
+    docker compose up -d --build
