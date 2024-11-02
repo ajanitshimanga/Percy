@@ -46,6 +46,7 @@ class CharacterModel(Base):
     lore = Column(String)
     appearance = Column(String)
     misc = Column(String)
+    agent_id = Column(String)
 
     # TODO(ajanitshimanga): Handle user based authentication after CRUD.
     # past = Column(String)
@@ -66,6 +67,7 @@ class CharacterModel(Base):
             f"appearance='{self.appearance}', "
             f"lore='{self.lore}', "
             f"misc='{self.misc}', "
+            f"agent_id='{self.agent_id}', "
         )
 
 

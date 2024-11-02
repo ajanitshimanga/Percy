@@ -5,6 +5,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException
 from letta.client.client import AbstractClient
+from letta.schemas.memory import ChatMemory
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -61,18 +62,54 @@ class AbstractPercyContext(object):
 class PercyManagementContext(AbstractPercyContext):
 
     # TODO(ajanitshimanga): Refactor raw db session to a metadata service.
-    def __init__(self, db_session: Session,  agent_client: AbstractClient, datastore: DataStore = None):
-        self.db_session = db_session
-        self.agent_client = agent_client
+    def __init__(self, db_session: Optional[Session] = None,  agent_client: Optional[AbstractClient] = None, datastore: DataStore = None):
+        self.db_session = db_session or SessionLocal()
+        self.agent_client = agent_client or get_letta_client()
         self.datastore = datastore   # TODO: plumb in data store to phase out db_session
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Close db after use
+        self.db_session.close()
 
     # TODO(ajanitshimanga): self.metadata_store.create_character(character) instead of coupling.
     def create_character(self, character_id: str, character_name: str, lore: str, appearance: str, misc: str) -> CharacterCreateResponse:
+
+        # Create a chat memory block for agent
+        # TODO(ajanitshimang): implementation choice to make, either increase memory block size to larger or make lore,
+        #  appearace, and misc input into the archival memory so it uses RAG like instead to load into memory.
+        user_name = "Eren-Default"
+        base_persona = f"""
+        I am {character_name} and I must answer user questions, scenarios, and hypothetical interactions with other entities
+        that is consistent with my persona information and all data sources that I have access and knowledge of. My goal is to be as detailed as possible in answering character related writing questions with the user.
+
+        These are the relevant data related to my self and persona:
+        
+        Name: {character_name}
+        
+        Lore: {lore}
+        
+        appearance: {appearance}
+        
+        misc: {misc}
+"""
+        chat_memory = ChatMemory(persona=base_persona, human=f"Name: {user_name}", limit=6000)
+
+        # Create an agent and populate a db record for character_id -> agent id
+        agent_state = self.agent_client.create_agent(name=character_name, memory=chat_memory)
+        agent_id = agent_state.id
+
+        if not agent_state.id:
+            raise ValueError("Agent state was not populated and should be populated to create character.")
+
         character = CharacterModel(character_id=character_id,
                                    character_name=character_name,
                                    lore=lore,
                                    appearance=appearance,
-                                   misc=misc
+                                   misc=misc,
+                                   agent_id=agent_id
                                    )
 
         self.db_session.add(character)
