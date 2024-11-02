@@ -22,6 +22,10 @@ jobs:
         run: |
           pip install poetry
 
+      - name: Install dependencies
+        run: |
+          poetry install
+
       - name: Start containers for tests
         run: |
           docker compose up -d --build  # Start containers in detached mode
@@ -29,10 +33,6 @@ jobs:
       - name: Wait for containers to initialize
         run: |
           sleep 30  # Wait 30 seconds for containers to be ready
-
-      - name: Install dependencies
-        run: |
-          poetry install
 
       - name: Run tests
         run: |
